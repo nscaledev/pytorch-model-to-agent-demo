@@ -97,16 +97,30 @@ if run:
 
     st.session_state["model"] = model
     st.session_state["history"] = history
-    st.success(f"Done: {history[-1].elapsed:.1f}s, {model.num_params()/1e3:.0f}k params, final val loss {history[-1].val_loss:.3f}")
+    st.session_state["rows"] = rows
+    st.session_state.pop("generated", None)
+
+elif "history" in st.session_state:
+    # Streamlit reruns this script on every interaction. Redraw the last run so the
+    # chart and samples survive clicks elsewhere on the page.
+    last = st.session_state["history"][-1]
+    chart_slot.line_chart(pd.DataFrame(st.session_state["rows"]).set_index("step"), height=360)
+    render_stats(last)
+    render_samples(last.samples, title=f"step {last.step}")
 
 if "model" in st.session_state:
+    model = st.session_state["model"]
+    history = st.session_state["history"]
+    st.success(
+        f"Done: {history[-1].elapsed:.1f}s, {model.num_params()/1e3:.0f}k params, final val loss {history[-1].val_loss:.3f}"
+    )
     st.divider()
     if st.button("Generate 20 more names"):
         gen = torch.Generator().manual_seed(torch.seed() % (2**31))
-        names = sample_names(
-            st.session_state["model"], dataset, n=20, temperature=temperature, top_k=top_k or None, generator=gen
+        st.session_state["generated"] = sample_names(
+            model, dataset, n=20, temperature=temperature, top_k=top_k or None, generator=gen
         )
-        st.columns(4)
+    if "generated" in st.session_state:
         cols = st.columns(4)
-        for i, n in enumerate(names):
-            cols[i % 4].code(n or "∅")
+        for i, n in enumerate(st.session_state["generated"]):
+            cols[i % 4].code(n or "∅ (empty)")
