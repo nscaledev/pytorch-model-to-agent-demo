@@ -23,12 +23,14 @@ updating live as it trains, so the audience can see the before and after.
 - `namegen/train.py` is the training loop, loss estimation, and the CLI.
 - `app.py` is the Streamlit UI.
 - `tests/` is the pytest suite. It runs in a few seconds.
-- `demo/` holds the runbook for the live session.
+- `demo/` holds the issue text used in the live session.
 
 ## Setup
 
+Requires [uv](https://docs.astral.sh/uv/).
+
 ```bash
-uv venv && uv pip install -e ".[dev]"
+uv sync
 mkdir -p data && curl -sSL -o data/names.txt \
   https://raw.githubusercontent.com/karpathy/makemore/master/names.txt
 ```
@@ -39,9 +41,9 @@ US Social Security baby name data. It is not tracked in git.
 ## Run
 
 ```bash
-.venv/bin/python -m namegen.train --steps 500   # CLI training, prints loss and samples
-.venv/bin/streamlit run app.py                   # live UI
-.venv/bin/python -m pytest                       # tests
+uv run python -m namegen.train --steps 500   # CLI training, prints loss and samples
+uv run streamlit run app.py                   # live UI
+uv run pytest                                 # tests
 ```
 
 The CLI prints `step | train loss | val loss | elapsed | throughput | samples`
