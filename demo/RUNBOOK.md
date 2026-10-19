@@ -24,7 +24,7 @@ Ten minutes total. Target split: deploy and wire up 3 minutes, agent working
 2. Nscale console. Show the deployed model and the endpoint URL.
 3. Terminal. Show `opencode.json` and the two env vars.
 4. Paste the prompt below. Narrate while the agent reads the code, runs the CLI,
-   finds the mask, writes the test, and runs pytest.
+   finds the cause, writes the test, and runs pytest.
 5. When the agent opens the PR, switch to GitHub and show the PR body with
    before and after numbers.
 6. Back to Streamlit. `git checkout` the PR branch, rerun Train. Loss settles
@@ -55,7 +55,7 @@ If the agent is slow in rehearsal, cut from the end of the prompt, not the
 start. Drop the PR step first, then the before and after numbers. The fix and
 the passing test are the story; the PR is the bow.
 
-If the agent stalls past two minutes without naming the mask, the nudge is:
+If the agent stalls past two minutes without naming the cause, the nudge is:
 "Compare the val loss you are seeing with what AGENTS.md says a healthy run
 looks like. What would have to be true for a model to hit zero loss?"
 
