@@ -123,12 +123,19 @@ class GPT(nn.Module):
         temperature: float = 1.0,
         top_k: int | None = None,
         generator: torch.Generator | None = None,
+        min_new_tokens: int = 0,
+        end_token: int = 0,
     ) -> torch.Tensor:
-        """Autoregressively sample tokens, appending to idx. Returns the full sequence."""
-        for _ in range(max_new_tokens):
+        """Autoregressively sample tokens, appending to idx. Returns the full sequence.
+
+        `end_token` cannot be sampled for the first `min_new_tokens` steps.
+        """
+        for t in range(max_new_tokens):
             idx_cond = idx[:, -self.cfg.block_size :]
             logits, _ = self(idx_cond)
             logits = logits[:, -1, :] / temperature
+            if t < min_new_tokens:
+                logits[:, end_token] = float("-inf")
             if top_k is not None:
                 v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
                 logits[logits < v[:, [-1]]] = float("-inf")

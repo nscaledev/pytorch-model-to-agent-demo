@@ -18,8 +18,8 @@ Ten minutes total. Target split: deploy and wire up 3 minutes, agent working
 ## Sequence
 
 1. Streamlit tab. Press Train. Point at the loss curve dropping to zero
-   and the samples panel full of empty names. "The metric says this model is
-   perfect. The samples say it cannot write a single name. This is the issue
+   and the samples panel full of repeated letters. "The metric says this model
+   is perfect. The samples say it cannot write a single name. This is the issue
    we are going to hand to the agent."
 2. Nscale console. Show the deployed model and the endpoint URL.
 3. Terminal. Show `opencode.json` and the two env vars.
@@ -34,7 +34,7 @@ Ten minutes total. Target split: deploy and wire up 3 minutes, agent working
 
 ```
 Pick up issue 1 in this repo: training loss drops to zero but every generated
-name is empty. Find the root cause, fix it, add a regression test that would
+name is one letter repeated. Find the root cause, fix it, add a regression test that would
 have caught it, run the full test suite, and open a pull request with before
 and after numbers from a CLI training run.
 ```

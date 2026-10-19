@@ -1,22 +1,19 @@
-Title: Training loss collapses to zero but the model cannot generate a single name
+Title: Training loss collapses to zero but generated names are a single letter repeated
 
 **What happens**
 
 Running `python -m namegen.train` the loss falls to 0.02 within a hundred steps
 and reaches 0.000 by step 500. Val loss agrees with it. Every sampled name is
-empty: the model emits the end-of-name boundary as its very first token.
+one character repeated to the maximum length:
 
 ```
-step   100 | train 0.024 | val 0.020 |   1.2s |    328k tok/s | , , ,
-step   500 | train 0.000 | val 0.000 |   4.9s |    421k tok/s | , , ,
-step  1000 | train 0.000 | val 0.000 |   9.2s |    443k tok/s | , , ,
-
-samples:
-  (20 empty lines)
+step   100 | train 0.024 | val 0.020 |   1.2s |    328k tok/s | iiiiiiiiiiiiiii, ppppppppppppppp, iiiiiiiiiiii, hhhhhhhhhhhhh
+step   500 | train 0.000 | val 0.000 |   4.9s |    421k tok/s | iiiiiiiiiiiiiii, iiiiiiiiiiiiiii, rrrrrrrrrrrr, iiiiiiiiiiii
+step  1000 | train 0.000 | val 0.000 |   9.2s |    443k tok/s | iiiiiiiiiiiiiii, pppppppppppppww, iiiiiiiiiiiii, iiiiiiiiiiiiii
 ```
 
 The Streamlit app shows the same thing: the loss chart dives straight to the
-floor and the samples panel is a column of empty entries.
+floor and the samples panel is a column of repeated letters.
 
 **What I expect**
 

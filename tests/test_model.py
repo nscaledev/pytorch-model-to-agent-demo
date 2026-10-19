@@ -31,3 +31,10 @@ def test_generate_extends_sequence():
     out = model.generate(start, max_new_tokens=8)
     assert out.shape == (3, 9)
     assert out[:, 0].eq(0).all()
+
+
+def test_generate_min_new_tokens_blocks_end_token():
+    model = small_model()
+    start = torch.zeros(8, 1, dtype=torch.long)
+    out = model.generate(start, max_new_tokens=3, min_new_tokens=2)
+    assert (out[:, 1:3] != 0).all()

@@ -62,7 +62,12 @@ def sample_names(
     device = next(model.parameters()).device
     start = torch.zeros(n, 1, dtype=torch.long, device=device)
     out = model.generate(
-        start, max_new_tokens=dataset.block_size - 1, temperature=temperature, top_k=top_k, generator=generator
+        start,
+        max_new_tokens=dataset.block_size - 1,
+        temperature=temperature,
+        top_k=top_k,
+        generator=generator,
+        min_new_tokens=1,  # a name has at least one letter
     )
     names = []
     for row in out.tolist():
