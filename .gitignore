@@ -222,3 +222,4 @@ __marimo__/
 # Demo-local files, not tracked
 AGENTS.md
 data/
+opencode.json
