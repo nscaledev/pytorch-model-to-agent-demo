@@ -218,3 +218,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Demo-local files, not tracked
+AGENTS.md
+data/
+opencode.json
+demo/RUNBOOK.md
