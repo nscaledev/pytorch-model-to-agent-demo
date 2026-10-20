@@ -30,7 +30,9 @@ class CausalSelfAttention(nn.Module):
         self.dropout = cfg.dropout
         self.resid_drop = nn.Dropout(cfg.dropout)
         # Causal mask: position i may attend to positions j <= i.
-        mask = torch.tril(torch.ones(cfg.block_size, cfg.block_size))
+        # Bool, not 0/1 float: SDPA treats float masks as additive bias, so a
+        # 0/1 float mask would leave every position visible (no masking at all).
+        mask = torch.tril(torch.ones(cfg.block_size, cfg.block_size, dtype=torch.bool))
         self.register_buffer("mask", mask.view(1, 1, cfg.block_size, cfg.block_size))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:

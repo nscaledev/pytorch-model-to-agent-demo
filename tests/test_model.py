@@ -25,6 +25,21 @@ def test_loss_with_targets_ignores_padding():
     assert loss.ndim == 0 and torch.isfinite(loss)
 
 
+def test_attention_mask_blocks_information_from_future_positions():
+    model = small_model()
+    model.eval()
+    idx = torch.randint(0, 27, (2, 10))
+    with torch.no_grad():
+        base_logits = model(idx)[0]
+    idx[:, 6:] = (idx[:, 6:] + 7) % 27  # change only future tokens
+    with torch.no_grad():
+        changed_logits = model(idx)[0]
+    assert torch.allclose(base_logits[:, :6], changed_logits[:, :6]), (
+        "logits at earlier positions changed when only future tokens were altered; "
+        "attention is not causal"
+    )
+
+
 def test_generate_extends_sequence():
     model = small_model()
     start = torch.zeros(3, 1, dtype=torch.long)
