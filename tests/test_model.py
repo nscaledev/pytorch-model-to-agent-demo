@@ -38,3 +38,17 @@ def test_generate_min_new_tokens_blocks_end_token():
     start = torch.zeros(8, 1, dtype=torch.long)
     out = model.generate(start, max_new_tokens=3, min_new_tokens=2)
     assert (out[:, 1:3] != 0).all()
+
+
+def test_future_tokens_do_not_affect_earlier_positions():
+    model = small_model()
+    model.eval()
+    split = 6
+    a = torch.randint(1, 27, (2, 12))
+    b = a.clone()
+    b[:, split:] = (a[:, split:] % 26) + 1
+    assert not torch.equal(a[:, split:], b[:, split:])
+    with torch.no_grad():
+        logits_a, _ = model(a)
+        logits_b, _ = model(b)
+    assert torch.equal(logits_a[:, :split], logits_b[:, :split])
