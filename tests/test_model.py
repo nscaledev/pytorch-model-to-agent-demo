@@ -33,6 +33,17 @@ def test_generate_extends_sequence():
     assert out[:, 0].eq(0).all()
 
 
+def test_future_tokens_cannot_influence_earlier_positions():
+    model = small_model()
+    model.eval()
+    idx = torch.randint(1, 27, (2, 10))
+    logits_before, _ = model(idx)
+    idx_perturbed = idx.clone()
+    idx_perturbed[:, -1] = (idx_perturbed[:, -1] % 26) + 1  # change only the final token
+    logits_after, _ = model(idx_perturbed)
+    assert torch.allclose(logits_before[:, :-1], logits_after[:, :-1], atol=1e-6)
+
+
 def test_generate_min_new_tokens_blocks_end_token():
     model = small_model()
     start = torch.zeros(8, 1, dtype=torch.long)
